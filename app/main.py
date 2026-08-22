@@ -3,7 +3,6 @@ from datetime import datetime, timezone
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
-
 app = FastAPI(
     title="Cloud Security Dashboard",
     description="Cloud security application for CI/CD deployment",
