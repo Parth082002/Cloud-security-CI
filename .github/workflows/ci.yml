@@ -29,10 +29,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install ruff
+          pip install pip-audit
 
       - name: Run code quality checks
         run: |
           ruff check .
+
+      - name: Run pip-audit for dependency vulnerability scanning
+        run: |
+          pip-audit -r requirements.txt   
 
       - name: Run tests
         run: |
