@@ -8,6 +8,11 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
+# Update Debian packages and clean package lists
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install dependencies first for better Docker layer caching
 COPY requirements.txt .
 
