@@ -25,7 +25,7 @@ jobs:
         run: |
           docker build -t cloud-security-ci:${{ github.sha }} .
 
-            - name: Debug installed package versions
+      - name: Debug installed package versions
         run: |
           docker run --rm cloud-security-ci:${{ github.sha }} apt-cache policy gzip libpcre2-8-0 libsqlite3-0 perl-base    
 
