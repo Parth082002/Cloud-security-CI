@@ -27,7 +27,7 @@ jobs:
 
       - name: Debug installed package versions
         run: |
-          docker run --rm cloud-security-ci:${{ github.sha }} .
+          docker --rm cloud-security-ci:${{ github.sha }} .
           apt-cache policy gzip libpcre2-8-0 libsqlite3-0 perl-base    
 
       - name: Run Trivy vulnerability scanner
