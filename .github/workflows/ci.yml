@@ -38,6 +38,24 @@ jobs:
           severity: HIGH,CRITICAL
           exit-code: '1'
           ignore-unfixed: true
+      
+      - name: Generate full vulnerability report (all severities)
+        if: always()
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: cloud-security-ci:${{ github.sha }}
+          format: json
+          output: trivy-report.json
+          severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
+          exit-code: '0'
+
+      - name: Upload Trivy report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-report-${{ github.sha }}
+          path: trivy-report.json
+          retention-days: 30    
 
   test:
     name: Test Application
