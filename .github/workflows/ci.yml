@@ -9,20 +9,44 @@ on:
     branches:
       - main
 
-jobs:
-  test:
-    name: Test Application
+permissions:
+  contents: read
 
+jobs:
+  container-security:
+    name: Container Security Scan
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Build Docker image
+        run: |
+          docker build -t cloud-security-ci:${{ github.sha }} .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
         with:
-          python-version: "3.11"
+          image-ref: cloud-security-ci:${{ github.sha }}
+          format: table
+          severity: HIGH,CRITICAL
+          exit-code: '1'
+          ignore-unfixed: true
+
+  test:
+    name: Test Application
+    needs: container-security
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
 
       - name: Install dependencies
         run: |
@@ -35,9 +59,9 @@ jobs:
         run: |
           ruff check .
 
-      - name: Run pip-audit for dependency vulnerability scanning
+      - name: Run pip-audit
         run: |
-          pip-audit -r requirements.txt   
+          pip-audit -r requirements.txt
 
       - name: Run tests
         run: |
