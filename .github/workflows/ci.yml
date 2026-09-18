@@ -23,11 +23,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t cloud-security-ci:${{ github.sha }} .
-
-      - name: Debug installed package versions
-        run: |
-          docker run --rm cloud-security-ci:${{ github.sha }}  apt-cache policy gzip libpcre2-8-0 libsqlite3-0 perl-base    
+          docker build -t cloud-security-ci:${{ github.sha }} .  
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
