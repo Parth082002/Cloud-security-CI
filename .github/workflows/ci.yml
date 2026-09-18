@@ -36,7 +36,7 @@ jobs:
 
   test:
     name: Test Application
-    needs: container-security
+   # needs: container-security
     runs-on: ubuntu-latest
 
     steps:
