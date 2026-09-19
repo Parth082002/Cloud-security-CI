@@ -10,7 +10,7 @@ on:
       - main
 
   schedule:
-    - cron: '0 3 * * *'    
+    - cron: '0 3 * * *'
 
 permissions:
   contents: read
@@ -19,21 +19,6 @@ jobs:
   container-security:
     name: Container Security Scan
     runs-on: ubuntu-latest
-
-  secret-scanning:
-    name: Secret Scanning
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-
-      - name: Run Gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
 
     steps:
       - name: Checkout repository
@@ -49,11 +34,11 @@ jobs:
           path: ~/.cache/trivy
           key: trivy-db-${{ steps.date.outputs.date }}
           restore-keys: |
-            trivy-db-  
+            trivy-db-
 
       - name: Build Docker image
         run: |
-          docker build -t cloud-security-ci:${{ github.sha }} .  
+          docker build -t cloud-security-ci:${{ github.sha }} .
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
@@ -63,7 +48,7 @@ jobs:
           severity: HIGH,CRITICAL
           exit-code: '1'
           ignore-unfixed: true
-      
+
       - name: Generate full vulnerability report (all severities)
         if: always()
         uses: aquasecurity/trivy-action@master
@@ -80,7 +65,22 @@ jobs:
         with:
           name: trivy-report-${{ github.sha }}
           path: trivy-report.json
-          retention-days: 30    
+          retention-days: 30
+
+  secret-scanning:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   test:
     name: Test Application
