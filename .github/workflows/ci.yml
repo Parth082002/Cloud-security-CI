@@ -82,7 +82,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    iac-scanning:
+  iac-scanning:
     name: IaC Security Scan
     runs-on: ubuntu-latest
 
