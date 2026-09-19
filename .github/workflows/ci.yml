@@ -82,9 +82,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    iac-scanning:
+    name: IaC Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: terraform/
+          framework: terraform        
+
   test:
     name: Test Application
-    needs: [container-security, secret-scanning]
+    needs: [container-security, secret-scanning, iac-scanning]
     if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
 
